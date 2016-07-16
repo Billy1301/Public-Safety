@@ -25,10 +25,6 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main Activity";
     public static final int MEDIA_TYPE_VIDEO = 2;
-    private ImageButton policeButton;
-    private ImageButton callButton;
-    private ImageButton textButton;
-    private ImageButton recordButton;
     private android.hardware.Camera mCamera;
     private MediaRecorder mMediaRecorder;
     private boolean isRecording = false;
@@ -39,19 +35,40 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initializeViews();
         checkCameraHardware();
-        setButtons();
+        if (isRecording) {
+            // stop recording and release camera
+            mMediaRecorder.stop();  // stop the recording
+            releaseMediaRecorder(); // release the MediaRecorder object
+            mCamera.lock();         // take camera access back from MediaRecorder
+
+            // inform the user that recording has stopped setCaptureButtonText("Capture");
+            isRecording = false;
+        } else {
+            // initialize video camera
+            if (prepareVideoRecorder()) {
+                // Camera is available and unlocked, MediaRecorder is prepared,
+                // now you can start recording
+                mMediaRecorder.start();
+                mMediaRecorder.setMaxDuration(30000);
+                getOutputMediaFileUri();
 
 
-    }
+                /*
+        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+        File file = createFile();
+        mMediaRecorder.setOutputFile(file.getAbsolutePath());
+                 */
 
-    private void initializeViews(){
-        policeButton = (ImageButton) findViewById(R.id.policeButton_id);
-        callButton = (ImageButton) findViewById(R.id.callButton_id);
-        textButton = (ImageButton) findViewById(R.id.textButton_id);
-        recordButton = (ImageButton) findViewById(R.id.recordButton_id);
-        recordButton = (ImageButton) findViewById(R.id.recordButton_id);
+                // inform the user that recording has started setCaptureButtonText("Stop");
+                isRecording = true;
+            } else {
+                // prepare didn't work, release the camera
+                releaseMediaRecorder();
+                // inform user
+            }
+        }
     }
 
     /** Check if this device has a camera */
@@ -63,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // no camera on this device
             Log.i(TAG, "Device has no camera disable recordButton");
-            recordButton.setEnabled(false);
+//            recordButton.setEnabled(false);
             return false;
         }
     }
@@ -82,60 +99,6 @@ public class MainActivity extends AppCompatActivity {
             // Camera is not available (in use or does not exist)
         }
         return c; // returns null if camera is unavailable
-    }
-
-
-    private void setButtons(){
-        policeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-        callButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-        textButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-        recordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (isRecording && ) { //if it's recording AND the
-                    // stop recording and release camera
-                    mMediaRecorder.stop();  // stop the recording
-                    releaseMediaRecorder(); // release the MediaRecorder object
-                    mCamera.lock();         // take camera access back from MediaRecorder
-
-                    // inform the user that recording has stopped setCaptureButtonText("Capture");
-                    isRecording = false;
-                } else {
-                    // initialize video camera
-                    if (prepareVideoRecorder()) {
-                        // Camera is available and unlocked, MediaRecorder is prepared,
-                        // now you can start recording
-                        mMediaRecorder.start();
-                        mMediaRecorder.setMaxDuration(30000);
-                        getOutputMediaFileUri();
-
-
-                        // inform the user that recording has started setCaptureButtonText("Stop");
-                        isRecording = true;
-                    } else {
-                        // prepare didn't work, release the camera
-                        releaseMediaRecorder();
-                        // inform user
-                    }
-                }
-            }
-        });
     }
 
     private boolean prepareVideoRecorder(){
@@ -174,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
     @Override
     protected void onPause() {
@@ -349,6 +311,64 @@ not using below
     }
 
         private Intent takeVideoIntent;
+
+            private void setButtons(){
+        policeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        textButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        recordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (isRecording) {
+                    // stop recording and release camera
+                    mMediaRecorder.stop();  // stop the recording
+                    releaseMediaRecorder(); // release the MediaRecorder object
+                    mCamera.lock();         // take camera access back from MediaRecorder
+
+                    // inform the user that recording has stopped setCaptureButtonText("Capture");
+                    isRecording = false;
+                } else {
+                    // initialize video camera
+                    if (prepareVideoRecorder()) {
+                        // Camera is available and unlocked, MediaRecorder is prepared,
+                        // now you can start recording
+                        mMediaRecorder.start();
+                        mMediaRecorder.setMaxDuration(30000);
+                        getOutputMediaFileUri();
+
+
+                        // inform the user that recording has started setCaptureButtonText("Stop");
+                        isRecording = true;
+                    } else {
+                        // prepare didn't work, release the camera
+                        releaseMediaRecorder();
+                        // inform user
+                    }
+                }
+            }
+        });
+    }
+
+        private ImageButton policeButton;
+    private ImageButton callButton;
+    private ImageButton textButton;
+    private ImageButton recordButton;
 
 
  */
