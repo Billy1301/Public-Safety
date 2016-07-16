@@ -34,7 +34,7 @@ public class WidgetProvider extends AppWidgetProvider {
             /*
             Temporary intent
              */
-            String url = "http://www.tutorialspoint.com";
+            String url = "http://attepttapi.com";
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse(url));

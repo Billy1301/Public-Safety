@@ -1,11 +1,14 @@
 package billy.justincase;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
     /** Check if this device has a camera */
     private boolean checkCameraHardware() {
