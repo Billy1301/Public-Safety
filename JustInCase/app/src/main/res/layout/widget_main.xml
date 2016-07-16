@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorGreyClear"
+    tools:context=".WidgetProvider"
+    android:transitionGroup="true">
+    <ImageButton
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:text="Cal POPO"
+        android:scaleType="fitCenter"
+        android:padding="10dp"
+        android:layout_weight="1"
+        android:background="@color/colorGreyClear"
+        android:id="@+id/call_police_button"
+        android:src="@drawable/police_dark"
+        />
+    <ImageButton
+        android:layout_width="60dp"
+        android:background="@color/colorGreyClear"
+        android:layout_weight="1"
+        android:padding="10dp"
+        android:layout_height="60dp"
+        android:scaleType="fitCenter"
+        android:text="Call Friends"
+        android:id="@+id/call_friend_button"
+        android:src="@drawable/call_dark2"
+        />
+    <ImageButton
+        android:layout_width="60dp"
+        android:padding="10dp"
+        android:layout_height="60dp"
+        android:background="@color/colorGreyClear"
+        android:text="Text"
+        android:id="@+id/text_contacts_button"
+        android:scaleType="fitCenter"
+        android:src="@drawable/text_dark"
+        android:layout_weight="1"
+        />
+    <ImageButton
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="10dp"
+        android:background="@color/colorGreyClear"
+        android:scaleType="fitCenter"
+        android:layout_weight="1"
+        android:text="Record "
+        android:src="@drawable/record_dark2"
+        android:id="@+id/record_button"
+        />
+
+</LinearLayout>
