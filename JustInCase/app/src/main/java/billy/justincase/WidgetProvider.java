@@ -50,9 +50,9 @@ public class WidgetProvider extends AppWidgetProvider {
             // Send Broadcast here..
             Intent contactIntent = new Intent();
             // Broadcast action
-            intent.setAction("com.kodiak.intent.action.mobileapi");
+            contactIntent.setAction("com.kodiak.intent.action.mobileapi");
             // Data - formatted command string
-            intent.putExtra("PTTData",commandString);
+            contactIntent.putExtra("PTTData",commandString);
 //        sendBroadcast(intent);
 
 
