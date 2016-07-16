@@ -1,12 +1,17 @@
 package billy.justincase;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.ImageFormat;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
@@ -17,14 +22,19 @@ import android.widget.Toast;
  */
 public class WidgetProvider extends AppWidgetProvider {
 
+    Context context;
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
+        this.context = context;
         for (int i = 0; i < appWidgetIds.length; i++) {
             int currentWidgetId = appWidgetIds[i];
+
+            /*
+            Temporary intent
+             */
             String url = "http://www.tutorialspoint.com";
-
-
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse(url));
@@ -50,28 +60,44 @@ public class WidgetProvider extends AppWidgetProvider {
             // Send Broadcast here..
             Intent contactIntent = new Intent();
             // Broadcast action
-            intent.setAction("com.kodiak.intent.action.mobileapi");
+            contactIntent.setAction("com.kodiak.intent.action.mobileapi");
             // Data - formatted command string
-            intent.putExtra("PTTData",commandString);
+            contactIntent.putExtra("PTTData",commandString);
 //        sendBroadcast(intent);
+
+            /*
+            Record Activity Intent
+             */
+
+            Intent recordIntent = new Intent(context,MainActivity.class);
 
 
             PendingIntent pending = PendingIntent.getActivity(context, 0, intent, 0);
             PendingIntent callPolicePending = PendingIntent.getActivity(context,0,callIntent,0);
             PendingIntent callContactPending = PendingIntent.getBroadcast(context,0,contactIntent,0);
+            PendingIntent recordPending = PendingIntent.getActivity(context,0,recordIntent,0);
 
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_main);
 
-            views.setOnClickPendingIntent(R.id.call_police_button, callPolicePending);
+            if (permissionExists()) views.setOnClickPendingIntent(R.id.call_police_button, callPolicePending);
             views.setOnClickPendingIntent(R.id.call_friend_button, callContactPending);
             views.setOnClickPendingIntent(R.id.text_contacts_button, pending);
-            views.setOnClickPendingIntent(R.id.record_button, pending);
+            views.setOnClickPendingIntent(R.id.record_button, recordPending);
 //            views.setOnClickPendingIntent(R.id.button2, );
             appWidgetManager.updateAppWidget(currentWidgetId, views);
             Toast.makeText(context, "widget added", Toast.LENGTH_SHORT).show();
         }
+    }
 
-
+    @TargetApi(23)
+    private boolean permissionExists(){
+        int currentApiVersion = Build.VERSION.SDK_INT;
+        if (currentApiVersion < Build.VERSION_CODES.M){
+            return true;
+        }
+        int granted = context.checkSelfPermission(Manifest.permission.CALL_PHONE);
+        if (granted == PackageManager.PERMISSION_GRANTED)return true;
+        return false;
     }
 
     private void invokeLocationAndAudio(String MDN)
@@ -90,5 +116,7 @@ public class WidgetProvider extends AppWidgetProvider {
         intent.putExtra("PTTData",commandString);
 //        sendBroadcast(intent);
     }
+
+
 
 }
