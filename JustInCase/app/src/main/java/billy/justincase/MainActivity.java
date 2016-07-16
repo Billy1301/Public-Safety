@@ -1,22 +1,15 @@
 package billy.justincase;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.LoginFilter;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Toast;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -28,8 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private android.hardware.Camera mCamera;
     private MediaRecorder mMediaRecorder;
     private boolean isRecording = false;
-    private int duration;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 // now you can start recording
                 mMediaRecorder.start();
                 mMediaRecorder.setMaxDuration(30000);
-                getOutputMediaFileUri();
-
-
-                /*
-        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-        File file = createFile();
-        mMediaRecorder.setOutputFile(file.getAbsolutePath());
-                 */
+//                saveVideoToSavedPref();
 
                 // inform the user that recording has started setCaptureButtonText("Stop");
                 isRecording = true;
@@ -183,24 +166,65 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         }
-
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
         if(type == MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_"+ timeStamp + ".mp4");
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_"+ timeStamp + ".mp4");
         } else {
             return null;
         }
         return mediaFile;
     }
 
+    private void saveVideoToSavedPref(){
+        SharedPreferences sharedPreferences = getSharedPreferences("SHARE_KEY", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString("URI",getOutputMediaFileUri(MEDIA_TYPE_VIDEO));
+        editor.commit();
+    }
 
 }
 
 
 /*
+
+
+
+        mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+        File file = createFile();
+        mMediaRecorder.setOutputFile(file.getAbsolutePath());
+
+String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)){
+            File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "MyCameraApp");
+            // This location works best if you want the created images to be shared
+            // between applications and persist after your app has been uninstalled.
+
+            // Create the storage directory if it does not exist
+            if (! mediaStorageDir.exists()){
+                if (! mediaStorageDir.mkdirs()){
+                    Log.d("MyCameraApp", "failed to create directory");
+                    return null;
+                }
+            }
+
+            // Create a media file name
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            File mediaFile;
+            if(type == MEDIA_TYPE_VIDEO) {
+                mediaFile = new File(mediaStorageDir.getPath() + File.separator + "VID_"+ timeStamp + ".mp4");
+            } else {
+                return null;
+            }
+            return mediaFile;
+        } else {
+
+        }
+
+
 
 private static final int VIDEO_CAPTURE = 101;
 Uri videoUri;
@@ -299,6 +323,8 @@ not using below
 
     private Uri videoUri;
     private File mediaFile;
+                    mediaFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/myvideo.mp4");
+                videoUri = Uri.fromFile(mediaFile);
 
         static final int REQUEST_VIDEO_CAPTURE = 101;
 
